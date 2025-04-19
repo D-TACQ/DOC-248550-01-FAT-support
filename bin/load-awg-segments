@@ -1,0 +1,36 @@
+#!/bin/bash
+
+# recommend use DNS, else provide ip address on command line.
+# DNS: can be as simple as setting the ip/name pair in a hosts file
+uut=${1:-acq1102_032}
+segfile=${HOME}/PROJECTS/acq400_hapi/id32x2-64-24200-?.dat
+
+# hold array of file names, index from 1
+FILES=(0)
+
+ii=0
+for file in $segfile; do
+	if [ -e $file ]; then
+		len=$(stat -c %s $file)
+		if [ $len -gt 4194304 ]; then
+			echo WARNING: file size > 4MB please ask D-TACQ for advice
+			exit 1
+		fi
+		FILES+=($file)
+	fi
+done
+
+# array of seg selectors, index from 1
+SEGX=(0 A B C D E)
+
+# port to load SEGA, SEGB is at +10
+PORTA=54212
+
+for seg in $(seq 5); do
+	echo loading SEG:${SEGX[seg]} from file ${FILES[$seg]}
+
+#	echo nc \< ${FILES[$seg]} -q1 $uut $((PORTA+10*(seg-1)))
+	nc < ${FILES[$seg]} -q1 $uut $((PORTA+10*(seg-1)))
+	SEG=$((SEG+1))
+done
+
