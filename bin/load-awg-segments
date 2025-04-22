@@ -1,8 +1,11 @@
 #!/bin/bash
-
+#
+# ./bin/load-awg-segments [UUT [start_seg [end_seg] ] ]
 # recommend use DNS, else provide ip address on command line.
 # DNS: can be as simple as setting the ip/name pair in a hosts file
 uut=${1:-acq1102_032}
+start_seg=${2:-1}
+end_seg=${3:-5}
 segfile=${HOME}/PROJECTS/acq400_hapi/id32x2-64-24200-?.dat
 
 # hold array of file names, index from 1
@@ -20,13 +23,16 @@ for file in $segfile; do
 	fi
 done
 
+# set the AWG bufferlen to equal the length of this file for exact repetition
+echo dist_bufferlen_play=$len | nc -N $uut 4220
+
 # array of seg selectors, index from 1
 SEGX=(0 A B C D E)
 
 # port to load SEGA, SEGB is at +10
 PORTA=54212
 
-for seg in $(seq 5); do
+for seg in $(seq $start_seg $end_seg); do
 	echo loading SEG:${SEGX[seg]} from file ${FILES[$seg]}
 
 #	echo nc \< ${FILES[$seg]} -q1 $uut $((PORTA+10*(seg-1)))
