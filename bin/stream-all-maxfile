@@ -1,0 +1,27 @@
+#!/bin/bash
+# stream-all-maxfile : 
+
+# default: store 10MB and stop
+export ACQ400_STREAM_MAXM=${1:-1000}
+export ACQ400_PACK24=${ACQ400_PACK24:-1}
+export ACQ400_SOFT_TRIGGER=${ACQ400_SOFT_TRIGGER:-0}
+
+RXUUTS="${RXUUTS:-acq1102_033 acq1102_034}"
+
+trap 'kill $(jobs -p); exit' INT
+
+
+for u in $RXUUTS; do
+	if [ $ACQ400_PACK24 -eq 1 ]; then
+		acq400_stream $u | unpack24 32 2 > $u.dat &
+	else
+		acq400_stream $u > $u.dat &
+	fi
+	echo "pid $u $!"
+done
+for u in $UUTS; do
+	wait
+	ls -l $u.dat
+done
+echo stream-all-maxfile: done
+
