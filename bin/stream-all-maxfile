@@ -19,7 +19,7 @@ for u in $RXUUTS; do
 	fi
 	echo "pid $u $!"
 done
-for u in $UUTS; do
+for u in $RXUUTS; do
 	wait
 	ls -l $u.dat
 done
