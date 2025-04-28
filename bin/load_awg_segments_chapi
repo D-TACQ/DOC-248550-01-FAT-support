@@ -1,0 +1,12 @@
+#!/bin/sh
+UUT=${1:-acq1102_032}
+SW=${2:-1}
+
+#./PROJECTS/acq400_hapi/id32x2-64-24200-?.dat
+
+DR=./PROJECTS/acq400_hapi/id32x2-64-24200-
+
+ACQ400_LAS_MODE=ARP ACQ400_LAS_SWITCH_SEG=${SW} acq400_load_awg_seg ${UUT} \
+	A=${DR}1.dat B=${DR}2.dat C=${DR}3.dat D=${DR}4.dat E=${DR}5.dat
+
+
