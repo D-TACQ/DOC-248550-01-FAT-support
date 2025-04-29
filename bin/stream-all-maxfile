@@ -19,6 +19,12 @@ for u in $RXUUTS; do
 	fi
 	echo "pid $u $!"
 done
+sleep 5
+for u in $RXUUTS; do
+	# STATE should be ARM
+	acq400_chapi_acq400_test $u "get.site 0 CONTINUOUS:STATE"
+done
+
 for u in $RXUUTS; do
 	wait
 	ls -l $u.dat
