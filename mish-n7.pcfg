@@ -1,0 +1,4 @@
+8=ch_egu,fmt=CH08(V)
+33=ch_bf,0xffffffff,fmt=SPAD0
+34=ch_bf,0x00004000,fmt=DI
+
